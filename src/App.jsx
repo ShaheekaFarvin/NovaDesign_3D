@@ -1,12 +1,13 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Footer from './components/layout/Footer'
 import Navbar from './components/layout/Navbar'
 import Button from './components/ui/Button'
 import ServiceCard from './components/ui/ServiceCard'
 import Works from './sections/Works'
 import { services } from './data/services'
-import { contact, socials, testimonials, process, reasons, faqs } from './data/content'
+import { contact, testimonials, process, reasons, faqs } from './data/content'
 
 const RollingScene = lazy(() => import('./components/three/RollingScene'))
 gsap.registerPlugin(ScrollTrigger)
@@ -185,16 +186,7 @@ function App() {
         </Section>
       </main>
 
-      <footer className="border-t border-neon/30 px-6 py-10 text-center text-soft">
-        <p className="font-display text-2xl text-neon">NovaDesign</p>
-        <p className="mt-2">We Create. You Grow.</p>
-        <div className="mt-4 flex justify-center gap-5">
-          {socials.filter(([, url]) => url).map(([name, url]) => (
-            <a key={name} href={url} {...external} className="hover:text-neon">{name}</a>
-          ))}
-        </div>
-        <p className="mt-4 text-sm">© {new Date().getFullYear()} NovaDesign</p>
-      </footer>
+      <Footer />
     </>
   )
 }
