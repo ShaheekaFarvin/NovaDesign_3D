@@ -2,15 +2,14 @@ import { motion } from 'motion/react'
 
 function ServiceCard({ title, text, icon: Icon }) {
   return (
-    <motion.article
-      whileHover={{ y: -10, scale: 1.02 }}
-      className="group rounded-3xl border border-white/10 bg-surface/70 p-8 transition-colors hover:border-neon/50"
-    >
-      <div className="inline-flex rounded-2xl bg-neon/10 p-4 text-neon transition group-hover:rotate-6 group-hover:bg-neon group-hover:text-night">
-        <Icon aria-hidden="true" />
+    <motion.article whileHover={{ y: -4 }} className="glass flex items-start gap-4 rounded-2xl p-5">
+      <div className="shrink-0 rounded-xl border border-neon/40 p-2.5 text-neon">
+        <Icon aria-hidden="true" size={20} />
       </div>
-      <h3 className="mt-6 text-xl font-bold">{title}</h3>
-      <p className="mt-3 text-soft">{text}</p>
+      <div>
+        <h3 className="text-base font-bold">{title}</h3>
+        <p className="mt-1 text-sm text-soft">{text}</p>
+      </div>
     </motion.article>
   )
 }

@@ -1,34 +1,42 @@
-import { motion } from 'motion/react'
+import { Zap, Users, Clock } from 'lucide-react'
+import CrystalScene from '../components/three/CrystalScene'
 
-const values = [
-  { title: 'Our Mission', text: 'To turn ambitious ideas into digital experiences that feel alive.' },
-  { title: 'Our Vision', text: 'A web where every brand has a space worth exploring.' },
+const points = [
+  { icon: Zap, title: 'Innovative Solutions', text: 'Technology meets creativity.' },
+  { icon: Users, title: 'Client Focused', text: 'Your goals come first.' },
+  { icon: Clock, title: 'On-Time Delivery', text: 'Your time matters.' },
 ]
 
 function About() {
   return (
-    <section id="about" className="px-6 py-28">
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.8 }}
-        className="mx-auto max-w-5xl text-center"
-      >
-        <p className="text-sm uppercase tracking-[0.3em] text-neon">About Us</p>
-        <h2 className="mt-4 text-4xl font-bold md:text-5xl">Where design meets dimension</h2>
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-soft">
-          NovaDesign is a creative digital agency blending design, code and 3D motion.
-        </p>
-        <div className="mt-14 grid gap-6 text-left md:grid-cols-2">
-          {values.map((value) => (
-            <div key={value.title} className="rounded-3xl border border-white/10 bg-surface/70 p-8">
-              <h3 className="text-2xl font-bold text-neon">{value.title}</h3>
-              <p className="mt-3 text-soft">{value.text}</p>
-            </div>
-          ))}
+    <section id="about" className="px-6 py-24">
+      <div className="glass mx-auto grid max-w-7xl items-center gap-8 rounded-[3rem] p-8 md:p-12 lg:grid-cols-3">
+        <div>
+          <p className="text-neon">✦ About Us</p>
+          <h2 className="mt-3 text-4xl font-bold">
+            More than just a <span className="text-neon">design studio</span>
+          </h2>
+          <p className="mt-4 text-soft">
+            Our mission is to make ideas feel alive. Our vision is a web worth exploring.
+          </p>
         </div>
-      </motion.div>
+
+        <div aria-hidden="true" className="h-80">
+          <CrystalScene />
+        </div>
+
+        <ul className="space-y-4">
+          {points.map(({ icon: Icon, title, text }) => (
+            <li key={title} className="glass flex items-center gap-4 rounded-2xl p-4">
+              <Icon aria-hidden="true" className="shrink-0 text-neon" />
+              <div>
+                <h3 className="font-bold">{title}</h3>
+                <p className="text-sm text-soft">{text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }
