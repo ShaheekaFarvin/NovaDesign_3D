@@ -42,7 +42,7 @@
   position: relative;
   isolation: isolate;
   padding: clamp(6rem, 10vw, 8rem) 1.5rem;
-  background: radial-gradient(ellipse at 50% 15%, rgb(140 106 47 / 0.13), transparent 60%);
+  background: radial-gradient(ellipse at 50% 15%, #8c6a2f21, transparent 60%);
 }
 
 .works-content {
