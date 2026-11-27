@@ -37,3 +37,74 @@
     padding-bottom: 0.1em;
   }
 }
+
+.works-section {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  overflow: hidden;
+  padding: 6rem 1rem 2rem;
+}
+
+.works-orbit {
+  position: relative;
+  width: min(100%, 1100px);
+  height: min(76vh, 760px);
+  min-height: 400px;
+}
+
+.works-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: max-content;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.work-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: 1rem;
+  background: rgb(0 0 0 / 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.work-modal {
+  width: min(100%, 38rem);
+  max-height: min(85vh, 48rem);
+  overflow-y: auto;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.work-orbit-card {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  width: clamp(6rem, 12vw, 11rem);
+  min-height: 3.5rem;
+  place-content: center;
+  gap: 0.15rem;
+  padding: 0.6rem;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 767px) {
+  .works-orbit {
+    height: min(72vh, 720px);
+    min-height: 500px;
+  }
+
+  .work-orbit-card {
+    width: 6.25rem;
+    font-size: 0.7rem;
+    padding: 0.45rem;
+  }
+}

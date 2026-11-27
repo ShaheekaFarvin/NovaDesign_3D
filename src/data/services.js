@@ -1,10 +1,12 @@
-import { Monitor, Code, PenTool, Box, Smartphone, Palette } from 'lucide-react'
+import { Code, PenTool, Box, Smartphone, Palette, ShoppingCart, AppWindow, Gem } from 'lucide-react'
 
 export const services = [
-  { title: 'Website Design', icon: Monitor, text: 'Distinctive layouts that tell your brand story.' },
-  { title: 'Web Development', icon: Code, text: 'Fast, reliable sites built with modern tools.' },
-  { title: 'UI/UX Design', icon: PenTool, text: 'Clear, intuitive journeys designed around people.' },
-  { title: '3D Interactive Websites', icon: Box, text: 'Immersive scenes that respond to every scroll.' },
-  { title: 'Responsive Web Design', icon: Smartphone, text: 'A polished experience on every screen size.' },
-  { title: 'Branding & Graphic Design', icon: Palette, text: 'Identities and visuals people remember.' },
+  { title: 'Web Development', icon: Code, text: 'Modern, reliable websites built around your goals.' },
+  { title: 'UI/UX Design', icon: PenTool, text: 'Clear, intuitive experiences designed for your users.' },
+  { title: '3D Interactive Websites', icon: Box, text: 'Immersive visuals that respond as visitors explore.' },
+  { title: 'Responsive Web Design', icon: Smartphone, text: 'Layouts that adapt to phones, tablets and desktops.' },
+  { title: 'Graphic Design', icon: Palette, text: 'Eye-catching visuals for digital and print.' },
+  { title: 'E-commerce Development', icon: ShoppingCart, text: 'Online stores that make browsing and buying easy.' },
+  { title: 'Web Application Development', icon: AppWindow, text: 'Custom web tools that simplify how you work.' },
+  { title: 'Branding', icon: Gem, text: 'A consistent identity people can recognise.' },
 ]

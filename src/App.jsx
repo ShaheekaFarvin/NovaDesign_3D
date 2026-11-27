@@ -1,16 +1,20 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Navbar from './components/layout/Navbar'
 import Button from './components/ui/Button'
 import ServiceCard from './components/ui/ServiceCard'
-import RollingScene from './components/three/RollingScene'
+import Works from './sections/Works'
 import { services } from './data/services'
-import { stats, process, projects, reasons, faqs } from './data/content'
+import { contact, socials, testimonials, process, reasons, faqs } from './data/content'
 
+const RollingScene = lazy(() => import('./components/three/RollingScene'))
 gsap.registerPlugin(ScrollTrigger)
 
-const field = 'w-full rounded-xl border border-neon/30 bg-surface/60 p-4 outline-none focus:border-neon'
+const field = 'w-full rounded-xl border border-neon/30 bg-surface/80 p-3 outline-none focus:border-neon'
+const mailLink = `mailto:${contact.email}`
+const chatLink = `https://wa.me/${contact.whatsapp}`
+const external = { target: '_blank', rel: 'noopener noreferrer' }
 
 function Section({ id, label, title, children }) {
   return (
@@ -18,7 +22,6 @@ function Section({ id, label, title, children }) {
       <div className="text-center">
         <p className="text-xs uppercase tracking-[0.4em] text-neon">{label}</p>
         <h2 className="mt-3 text-3xl font-bold md:text-4xl">{title}</h2>
-        <div className="mx-auto mt-3 h-px w-20 bg-linear-to-r from-transparent via-neon to-transparent" />
       </div>
       <div className="mt-10">{children}</div>
     </section>
@@ -27,17 +30,61 @@ function Section({ id, label, title, children }) {
 
 function Card({ top, title, text }) {
   return (
-    <article className="glass rounded-2xl p-5 transition duration-300 hover:-translate-y-1 hover:border-neon">
-      {top && <p className="text-xs uppercase tracking-widest text-neon">{top}</p>}
+    <article className="glass rounded-2xl p-5">
+      {top && <p className="text-xs tracking-widest text-neon">{top}</p>}
       <h3 className="mt-2 text-lg font-bold">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-soft">{text}</p>
     </article>
   )
 }
 
+function InquiryForm() {
+  const [note, setNote] = useState('')
+
+  const submit = (event) => {
+    event.preventDefault()
+    const data = Object.fromEntries(new FormData(event.currentTarget))
+    if (!data.name.trim() || data.description.trim().length < 10) {
+      setNote('Please enter your name and at least 10 characters about the project.')
+      return
+    }
+    const body = `Name: ${data.name}\nEmail: ${data.email}\nProject type: ${data.type}\nBudget: ${data.budget}\n\n${data.description}`
+    if (event.nativeEvent.submitter?.value === 'email') {
+      window.location.href = `${mailLink}?subject=${encodeURIComponent('Project inquiry')}&body=${encodeURIComponent(body)}`
+      setNote('Your email app should open. Press Send there to finish.')
+    } else {
+      window.open(`${chatLink}?text=${encodeURIComponent(body)}`, '_blank', 'noopener,noreferrer')
+      setNote('WhatsApp should open. Press Send there to finish.')
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="glass mx-auto max-w-xl space-y-4 rounded-3xl p-6">
+      <input name="name" required aria-label="Name" placeholder="Your name" className={field} />
+      <input name="email" type="email" required aria-label="Email" placeholder="Your email" className={field} />
+      <select name="type" required defaultValue="" aria-label="Project type" className={field}>
+        <option value="" disabled>Project type</option>
+        {services.map((s) => <option key={s.title}>{s.title}</option>)}
+      </select>
+      <select name="budget" required defaultValue="" aria-label="Budget range" className={field}>
+        <option value="" disabled>Budget range</option>
+        <option>Under LKR 50,000</option>
+        <option>LKR 50,000 - 150,000</option>
+        <option>Above LKR 150,000</option>
+        <option>Not sure yet</option>
+      </select>
+      <textarea name="description" required minLength={10} rows={4} aria-label="Project description" placeholder="Describe your project" className={field} />
+      <div className="flex flex-wrap gap-3">
+        <Button type="submit" value="whatsapp">Send via WhatsApp</Button>
+        <Button type="submit" value="email" variant="outline">Send via Email</Button>
+      </div>
+      <p role="status" className="text-sm text-neon">{note}</p>
+    </form>
+  )
+}
+
 function App() {
   const progress = useRef(0)
-  const [note, setNote] = useState('')
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -52,98 +99,101 @@ function App() {
     return () => trigger.kill()
   }, [])
 
-  const submit = (event) => {
-    event.preventDefault()
-    setNote('Demo form: your details look good, but nothing was sent.')
-  }
-
   return (
     <>
       <div aria-hidden="true" className={`pointer-events-none fixed inset-0 -z-10 transition-opacity md:opacity-100 ${scrolled ? 'opacity-25' : 'opacity-100'}`}>
-        <RollingScene progress={progress} />
+        <Suspense fallback={null}>
+          <RollingScene progress={progress} />
+        </Suspense>
       </div>
       <Navbar />
       <main>
-        <section id="home" className="mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-6 pb-10 pt-80 md:justify-center md:py-28">
-          <p className="text-sm uppercase tracking-[0.3em] text-neon">Creative Digital Agency</p>
-          <h1 className="mt-5 max-w-2xl text-4xl font-bold md:text-6xl">Turn Your Ideas Into Reality</h1>
-          <p className="mt-6 max-w-xl text-lg text-soft">
-            Websites, UI/UX, 3D experiences and branding crafted for ambitious businesses.
-          </p>
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:flex sm:gap-4">
-            <Button href="#contact">Start a Project</Button>
+        <section id="home" className="mx-auto flex min-h-screen max-w-6xl flex-col justify-end px-6 pb-10 pt-80 md:justify-center md:py-28">
+          <p className="text-xs uppercase tracking-[0.3em] text-neon">Creative Web Design & Digital Experience Studio</p>
+          <h1 className="mt-5 max-w-xl text-4xl font-bold md:text-6xl">We Create. You Grow.</h1>
+          <p className="mt-5 max-w-lg text-soft">Modern websites, engaging experiences and digital solutions for your business.</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button href="#contact">Start Your Project</Button>
             <Button href="#projects" variant="outline">View Our Work</Button>
           </div>
-          <dl className="mt-8 grid grid-cols-2 gap-3 md:mt-14 md:grid-cols-4">
-            {stats.map(([value, label]) => (
-              <div key={label} className="glass rounded-xl px-4 py-3">
-                <dt className="text-sm text-soft">{label}</dt>
-                <dd className="font-display text-2xl text-neon md:text-3xl">{value}</dd>
-              </div>
-            ))}
-          </dl>
         </section>
 
-        <Section id="about" label="About Us" title="More than a design studio">
-          <div className="grid gap-6 md:grid-cols-3">
-            <Card title="Who we are" text="A creative digital agency blending design, code and motion." />
-            <Card title="Our mission" text="To turn ambitious ideas into experiences that feel alive." />
-            <Card title="Our vision" text="A web where every brand has a space worth exploring." />
+        <Section id="about" label="About NovaDesign" title="A creative digital studio">
+          <p className="glass mx-auto max-w-3xl rounded-3xl p-8 text-center text-soft">
+            NovaDesign is a creative digital studio focused on building modern websites, engaging user experiences, and innovative digital solutions. We combine creative design, modern technologies, and thoughtful development to help businesses establish a strong digital presence.
+          </p>
+        </Section>
+
+        <Section id="founder" label="Meet the Founder" title="Shaheeka Farvin">
+          <div className="glass mx-auto max-w-2xl rounded-3xl p-8 text-center">
+            <p className="text-neon">Founder | Web Developer | UI/UX Designer | Graphic Designer</p>
+            <p className="mt-4 text-soft">NovaDesign is a founder-led studio. You work directly with the person who designs and builds your project.</p>
           </div>
         </Section>
 
         <Section id="services" label="Our Services" title="What we offer">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => <ServiceCard key={service.title} {...service} />)}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map((s) => <ServiceCard key={s.title} {...s} />)}
           </div>
         </Section>
 
-        <Section id="process" label="How We Work" title="From idea to launch">
-          <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-5">
+        <Section id="process" label="Our Creative Process" title="From idea to launch">
+          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
             {process.map(([step, title, text]) => <Card key={step} top={step} title={title} text={text} />)}
           </div>
         </Section>
 
-        <Section id="projects" label="Concept Work" title="Featured projects">
-          <div className="grid gap-6 md:grid-cols-3">
-            {projects.map(([title, type, text]) => <Card key={title} top={type} title={title} text={text} />)}
-          </div>
-        </Section>
+        <Works />
 
-        <Section id="why" label="Why NovaDesign" title="Crafted with care">
-          <div className="grid gap-6 md:grid-cols-2">
+        <Section id="why" label="Why Choose NovaDesign?" title="Crafted with care">
+          <div className="grid gap-4 md:grid-cols-3">
             {reasons.map(([title, text]) => <Card key={title} title={title} text={text} />)}
           </div>
         </Section>
 
+        {testimonials.length > 0 && (
+          <Section id="testimonials" label="Testimonials" title="Client feedback">
+            <div className="grid gap-4 md:grid-cols-3">
+              {testimonials.map((t) => <Card key={t.name} title={t.name} text={t.text} />)}
+            </div>
+          </Section>
+        )}
+
         <Section id="faq" label="FAQ" title="Questions, answered">
-          <div className="mx-auto max-w-3xl space-y-4">
-            {faqs.map(([question, answer]) => (
-              <details key={question} className="glass rounded-2xl p-5">
-                <summary className="cursor-pointer font-semibold">{question}</summary>
-                <p className="mt-3 text-soft">{answer}</p>
+          <div className="mx-auto max-w-3xl space-y-3">
+            {faqs.map(([q, a]) => (
+              <details key={q} className="glass rounded-2xl p-5">
+                <summary className="cursor-pointer font-semibold">{q}</summary>
+                <p className="mt-3 text-sm text-soft">{a}</p>
               </details>
             ))}
           </div>
         </Section>
 
-        <Section id="contact" label="Contact" title="Let's create together">
-          <form onSubmit={submit} className="glass mx-auto max-w-xl space-y-4 rounded-3xl p-8">
-            <input required aria-label="Name" placeholder="Your name" className={field} />
-            <input required type="email" aria-label="Email" placeholder="Your email" className={field} />
-            <textarea required minLength={10} rows={4} aria-label="Message" placeholder="Tell us about your project" className={field} />
-            <button type="submit" className="rounded-full bg-neon px-8 py-3 font-semibold text-surface">
-              Send Message
-            </button>
-            <p role="status" className="text-neon">{note}</p>
-          </form>
+        <section className="px-6 py-24 text-center">
+          <h2 className="text-3xl font-bold md:text-5xl">Have an Idea? Let's Build Something Amazing.</h2>
+          <Button href="#contact" className="mt-8">Start Your Project</Button>
+        </section>
+
+        <Section id="contact" label="Contact" title="Tell us about your project">
+          <InquiryForm />
+          <div className="mt-6 flex flex-col items-center gap-2 text-soft">
+            <a href={mailLink} className="hover:text-neon">{contact.email}</a>
+            <a href={chatLink} {...external} className="hover:text-neon">WhatsApp: {contact.phone}</a>
+            <p>{contact.location}</p>
+          </div>
         </Section>
       </main>
+
       <footer className="border-t border-neon/30 px-6 py-10 text-center text-soft">
         <p className="font-display text-2xl text-neon">NovaDesign</p>
-        <p className="mt-2">Dream · Design · Develop</p>
-        <p className="mt-2">hello@example.com</p>
-        <p className="mt-4 text-sm">© 2026 NovaDesign. A fictional agency.</p>
+        <p className="mt-2">We Create. You Grow.</p>
+        <div className="mt-4 flex justify-center gap-5">
+          {socials.filter(([, url]) => url).map(([name, url]) => (
+            <a key={name} href={url} {...external} className="hover:text-neon">{name}</a>
+          ))}
+        </div>
+        <p className="mt-4 text-sm">© {new Date().getFullYear()} NovaDesign</p>
       </footer>
     </>
   )
