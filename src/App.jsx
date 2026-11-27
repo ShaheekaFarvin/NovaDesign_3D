@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { Mail, MapPin, MessageCircle } from 'lucide-react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Footer from './components/layout/Footer'
@@ -60,7 +61,7 @@ function InquiryForm() {
   }
 
   return (
-    <form onSubmit={submit} className="glass mx-auto max-w-xl space-y-4 rounded-3xl p-6">
+    <form onSubmit={submit} className="glass space-y-3 rounded-3xl p-6">
       <input name="name" required aria-label="Name" placeholder="Your name" className={field} />
       <input name="email" type="email" required aria-label="Email" placeholder="Your email" className={field} />
       <select name="type" required defaultValue="" aria-label="Project type" className={field}>
@@ -74,7 +75,7 @@ function InquiryForm() {
         <option>Above LKR 150,000</option>
         <option>Not sure yet</option>
       </select>
-      <textarea name="description" required minLength={10} rows={4} aria-label="Project description" placeholder="Describe your project" className={field} />
+      <textarea name="description" required minLength={10} rows={3} aria-label="Project description" placeholder="Describe your project" className={field} />
       <div className="flex flex-wrap gap-3">
         <Button type="submit" value="whatsapp">Send via WhatsApp</Button>
         <Button type="submit" value="email" variant="outline">Send via Email</Button>
@@ -87,6 +88,7 @@ function InquiryForm() {
 function App() {
   const progress = useRef(0)
   const [scrolled, setScrolled] = useState(false)
+  const [aboutActive, setAboutActive] = useState(false)
 
   useEffect(() => {
     const trigger = ScrollTrigger.create({
@@ -97,40 +99,118 @@ function App() {
         setScrolled(self.scroll() > 200)
       },
     })
-    return () => trigger.kill()
+    const aboutTrigger = ScrollTrigger.create({
+      trigger: '#about',
+      start: 'top 70%',
+      end: 'bottom 30%',
+      onToggle: (self) => setAboutActive(self.isActive),
+    })
+    return () => {
+      trigger.kill()
+      aboutTrigger.kill()
+    }
   }, [])
 
   return (
     <>
-      <div aria-hidden="true" className={`pointer-events-none fixed inset-0 -z-10 transition-opacity md:opacity-100 ${scrolled ? 'opacity-25' : 'opacity-100'}`}>
+      <div aria-hidden="true" className={`pointer-events-none fixed inset-0 -z-10 transition-opacity duration-700 ${scrolled ? 'opacity-40' : 'opacity-100'}`}>
         <Suspense fallback={null}>
-          <RollingScene progress={progress} />
+          <RollingScene progress={progress} aboutActive={aboutActive} />
         </Suspense>
       </div>
       <Navbar />
       <main>
-        <section id="home" className="mx-auto flex min-h-screen max-w-6xl flex-col justify-end px-6 pb-10 pt-80 md:justify-center md:py-28">
+        <section id="home" className="relative mx-auto flex min-h-screen max-w-6xl flex-col justify-end px-6 pb-32 pt-80 md:justify-center md:pt-28">
           <p className="text-xs uppercase tracking-[0.3em] text-neon">Creative Web Design & Digital Experience Studio</p>
-          <h1 className="mt-5 max-w-xl text-4xl font-bold md:text-6xl">We Create. You Grow.</h1>
+          <h1 className="mt-5 text-4xl font-bold md:text-6xl">
+            <span className="block">We Create.</span>
+            <span className="block text-neon">You Grow.</span>
+          </h1>
           <p className="mt-5 max-w-lg text-soft">Modern websites, engaging experiences and digital solutions for your business.</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button href="#contact">Start Your Project</Button>
             <Button href="#projects" variant="outline">View Our Work</Button>
           </div>
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-soft">
+            {['Founder-led studio', 'Mobile-friendly design', '3D & motion'].map((item) => (
+              <li key={item}><span className="text-neon">✦</span> {item}</li>
+            ))}
+          </ul>
+
+          <a href="#about" className="mt-8 self-start text-xs uppercase tracking-widest text-soft hover:text-neon">
+            Scroll to explore <span className="inline-block motion-safe:animate-bounce">↓</span>
+          </a>
+
+          <div aria-hidden="true" className="absolute inset-x-0 bottom-6 overflow-hidden border-y border-neon/20 py-3">
+            <div className="marquee flex w-max">
+              {[0, 1].map((copy) => (
+                <ul key={copy} className="flex shrink-0">
+                  {services.map((service) => (
+                    <li key={service.title} className="whitespace-nowrap px-6 text-xs uppercase tracking-widest text-soft">
+                      {service.title} <span className="ml-10 text-neon">◆</span>
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
+          </div>
         </section>
 
-        <Section id="about" label="About NovaDesign" title="A creative digital studio">
-          <p className="glass mx-auto max-w-3xl rounded-3xl p-8 text-center text-soft">
-            NovaDesign is a creative digital studio focused on building modern websites, engaging user experiences, and innovative digital solutions. We combine creative design, modern technologies, and thoughtful development to help businesses establish a strong digital presence.
-          </p>
-        </Section>
+        <section id="about" className="mx-auto flex min-h-screen max-w-6xl items-center px-6 py-24">
+          <div className="w-full lg:ml-auto lg:w-3/5">
+            <p className="text-xs uppercase tracking-[0.4em] text-neon">About NovaDesign</p>
+            <h2 className="mt-3 text-3xl font-bold md:text-5xl">A creative digital studio</h2>
+            <p className="mt-5 leading-relaxed text-soft">
+              NovaDesign is a creative digital studio focused on building modern websites, engaging user experiences, and innovative digital solutions. We combine creative design, modern technologies, and thoughtful development to help businesses establish a strong digital presence.
+            </p>
 
-        <Section id="founder" label="Meet the Founder" title="Shaheeka Farvin">
-          <div className="glass mx-auto max-w-2xl rounded-3xl p-8 text-center">
-            <p className="text-neon">Founder | Web Developer | UI/UX Designer | Graphic Designer</p>
-            <p className="mt-4 text-soft">NovaDesign is a founder-led studio. You work directly with the person who designs and builds your project.</p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              <Card top="01" title="Mission" text="Turn ideas into digital experiences that help businesses grow." />
+              <Card top="02" title="Vision" text="A strong, memorable online presence for every business we serve." />
+              <Card top="03" title="Approach" text="Listen first, design with purpose, build with care." />
+            </div>
+
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {['React', 'Node.js', 'Tailwind CSS', 'Three.js', 'GSAP', 'PHP', 'MySQL', 'MongoDB'].map((tool) => (
+                <li key={tool} className="rounded-full border border-neon/30 px-4 py-1.5 text-xs text-soft">{tool}</li>
+              ))}
+            </ul>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button href="#services">Explore Services</Button>
+              <Button href="#founder" variant="outline">Meet the Founder</Button>
+            </div>
           </div>
-        </Section>
+        </section>
+
+        <section id="founder" className="mx-auto flex min-h-screen max-w-6xl items-center px-6 py-24">
+          <div className="glass grid w-full items-center gap-8 rounded-3xl p-6 md:p-10 lg:grid-cols-3">
+            <div className="text-center">
+              <img src="/founder.png" alt="Shaheeka Farvin" className="mx-auto h-40 w-40 rounded-full border-2 border-neon object-cover" />
+              <h2 className="mt-5 text-3xl font-bold">Shaheeka Farvin</h2>
+              <p className="mt-2 text-sm text-neon">Founder, NovaDesign</p>
+              <p className="mt-1 text-sm text-soft">{contact.location}</p>
+            </div>
+
+            <div className="lg:col-span-2">
+              <p className="text-xs uppercase tracking-[0.4em] text-neon">Meet the Founder</p>
+              <p className="mt-4 text-lg leading-relaxed text-soft">
+                I'm a BICT (Hons) undergraduate at Rajarata University of Sri Lanka. I started NovaDesign to turn ideas into modern websites. You work directly with me, from the first idea to launch.
+              </p>
+
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                <Card title="Web Developer" text="Responsive websites and web applications." />
+                <Card title="UI/UX Designer" text="Clear layouts and easy user journeys." />
+                <Card title="Graphic Designer" text="Visuals and brand identity." />
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button href="#contact">Work With Me</Button>
+                <Button href="#projects" variant="outline">See My Projects</Button>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <Section id="services" label="Our Services" title="What we offer">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -176,14 +256,39 @@ function App() {
           <Button href="#contact" className="mt-8">Start Your Project</Button>
         </section>
 
-        <Section id="contact" label="Contact" title="Tell us about your project">
-          <InquiryForm />
-          <div className="mt-6 flex flex-col items-center gap-2 text-soft">
-            <a href={mailLink} className="hover:text-neon">{contact.email}</a>
-            <a href={chatLink} {...external} className="hover:text-neon">WhatsApp: {contact.phone}</a>
-            <p>{contact.location}</p>
+        <section id="contact" className="mx-auto flex min-h-screen max-w-6xl items-center px-6 py-24">
+          <div className="grid w-full items-start gap-8 lg:grid-cols-5">
+            <div className="lg:col-span-2">
+              <p className="text-xs uppercase tracking-[0.4em] text-neon">Contact</p>
+              <h2 className="mt-3 text-3xl font-bold md:text-4xl">Tell us about your project</h2>
+              <p className="mt-4 text-soft">Share your idea using the form, or reach us directly.</p>
+
+              <ul className="mt-6 space-y-3">
+                {[
+                  { icon: Mail, label: 'Email', value: contact.email, href: mailLink },
+                  { icon: MessageCircle, label: 'WhatsApp', value: contact.phone, href: chatLink },
+                  { icon: MapPin, label: 'Location', value: contact.location },
+                ].map(({ icon: Icon, label, value, href }) => (
+                  <li key={label} className="glass flex items-center gap-4 rounded-2xl p-4">
+                    <Icon aria-hidden="true" size={20} className="shrink-0 text-neon" />
+                    <div className="min-w-0">
+                      <p className="text-xs uppercase tracking-widest text-neon">{label}</p>
+                      {href ? (
+                        <a href={href} {...(href.startsWith('http') ? external : {})} className="break-all hover:text-neon">{value}</a>
+                      ) : (
+                        <p>{value}</p>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="lg:col-span-3">
+              <InquiryForm />
+            </div>
           </div>
-        </Section>
+        </section>
       </main>
 
       <Footer />

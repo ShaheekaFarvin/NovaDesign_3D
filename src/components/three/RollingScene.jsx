@@ -26,7 +26,7 @@ function Studio() {
   return null
 }
 
-function Orb({ progress }) {
+function Orb({ progress, aboutActive }) {
   const move = useRef(null)
   const spin = useRef(null)
   const liquid = useRef(null)
@@ -59,7 +59,10 @@ function Orb({ progress }) {
     const i = Math.min(Math.floor(s), stops.length - 2)
     const t = MathUtils.smoothstep(s - i, 0, 1)
     const small = viewport.width < 6
-    const x = small ? 0 : MathUtils.lerp(stops[i], stops[i + 1], t) * viewport.width * 0.25
+    const x = small
+      ? 0
+      : MathUtils.lerp(stops[i], stops[i + 1], t) * viewport.width * 0.25 -
+        (aboutActive ? viewport.width * 0.17 : 0)
 
     move.current.position.x = MathUtils.damp(move.current.position.x, x, 3, delta)
     move.current.position.y = small ? viewport.height * 0.22 * (1 - Math.min(s, 1)) : 0
@@ -92,13 +95,13 @@ function Orb({ progress }) {
   )
 }
 
-function RollingScene({ progress }) {
+function RollingScene({ progress, aboutActive }) {
   return (
     <Canvas camera={{ position: [0, 0, 6] }} dpr={[1, 1.5]}>
       <Studio />
       <directionalLight position={[4, 5, 5]} intensity={1.5} />
       <pointLight position={[-4, -2, 3]} color="#FFB347" intensity={20} />
-      <Orb progress={progress} />
+      <Orb progress={progress} aboutActive={aboutActive} />
     </Canvas>
   )
 }
