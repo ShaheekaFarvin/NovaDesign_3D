@@ -1,32 +1,36 @@
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
-import { navLinks } from '../../data/navLinks'
-import Button from '../ui/Button'
+
+const links = ['About', 'Services', 'Process', 'Projects', 'FAQ']
 
 function Navbar() {
   const [open, setOpen] = useState(false)
   const close = () => setOpen(false)
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-night/70 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a href="#home" onClick={close} className="font-display text-xl font-bold">
+    <header className="glass fixed inset-x-4 top-3 z-50 mx-auto max-w-5xl rounded-2xl">
+      <nav className="flex items-center justify-between px-5 py-2.5">
+        <a href="#home" onClick={close} className="font-display text-lg font-bold">
           Nova<span className="text-neon">Design</span>
         </a>
 
-        <ul className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a href={link.href} className="text-sm text-soft transition hover:text-neon">
-                {link.label}
+        <ul className={`${open ? 'flex' : 'hidden'} absolute inset-x-0 top-full mt-2 flex-col gap-4 rounded-2xl border border-neon/30 bg-surface p-5 shadow-2xl md:static md:mt-0 md:flex md:flex-row md:gap-7 md:border-0 md:bg-transparent md:p-0 md:shadow-none`}>
+          {[...links, 'Contact'].map((link) => (
+            <li key={link} className={link === 'Contact' ? 'md:hidden' : ''}>
+              <a
+                href={`#${link.toLowerCase()}`}
+                onClick={close}
+                className="text-xs uppercase tracking-widest text-soft transition hover:text-neon"
+              >
+                {link}
               </a>
             </li>
           ))}
         </ul>
 
-        <Button href="#contact" className="hidden md:inline-flex">
-          Start a Project
-        </Button>
+        <a href="#contact" className="hidden rounded-full border border-neon/60 px-4 py-1.5 text-xs font-semibold text-neon transition hover:bg-neon hover:text-surface md:block">
+          Let's Talk
+        </a>
 
         <button
           type="button"
@@ -35,21 +39,9 @@ function Navbar() {
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
         >
-          {open ? <X /> : <Menu />}
+          {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </nav>
-
-      {open && (
-        <ul className="flex flex-col gap-4 border-t border-white/10 px-6 py-6 md:hidden">
-          {[...navLinks, { label: 'Contact', href: '#contact' }].map((link) => (
-            <li key={link.href}>
-              <a href={link.href} onClick={close} className="block text-soft hover:text-neon">
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
     </header>
   )
 }

@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import Button from '../components/ui/Button'
-import OrbPlaceholder from '../components/ui/OrbPlaceholder'
+import HeroScene from '../components/three/HeroScene'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -27,9 +27,9 @@ function Hero() {
           </motion.p>
 
           <motion.h1 variants={fadeUp} className="mt-6 text-5xl font-bold leading-tight md:text-7xl">
-            We Design the{' '}
+            Turn Your Ideas Into{' '}
             <span className="bg-linear-to-r from-neon to-plasma bg-clip-text text-transparent">
-              Future of the Web
+              Reality
             </span>
           </motion.h1>
 
@@ -43,7 +43,9 @@ function Hero() {
           </motion.div>
         </motion.div>
 
-        <OrbPlaceholder />
+        <div aria-hidden="true" className="h-[360px] w-full rounded-full bg-radial from-plasma/30 to-transparent to-70% lg:h-[560px]">
+          <HeroScene />
+        </div>
       </div>
     </section>
   )
